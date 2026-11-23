@@ -1,0 +1,37 @@
+# dsh-deepseek-ui bundle patch.
+#
+# The shipped sidebar is disabled first: this bundle declares its own `sidebar`
+# seat (the same children the shipped shell declares), so the column has one
+# owner and no double render. Removing this bundle restores ui-sidebar.
+- id: ui-sidebar
+  disabled: true
+
+# Permission presets, trimmed to the two levels this interface exposes.
+#
+# Replacing the table removes the workspace-write preset everywhere it is
+# offered: the composer's permission selector, the General settings row, and the
+# new-session default. `defaultPreset` pins every newly created Session to
+# read-only, so a fresh chat starts in 仅可查看 instead of inheriting the
+# composition default.
+#
+# Labels stay equal to their preset keys so the shipped client localizes them
+# (仅可查看 / 完全权限) instead of showing a raw name.
+- id: permission
+  name: '@deepseek-ai/dsh-permission-presets'
+  config:
+    presets:
+      read-only:
+        sandbox: read-only
+        approval: ask
+        name: read-only
+        description: 只能查看文件与执行只读命令；需要写入时会先征求批准。
+      danger-full-access:
+        sandbox: danger-full-access
+        approval: never
+        name: danger-full-access
+        description: 完全文件访问，不再询问批准。
+    defaultPreset: read-only
+
+- insert:
+    - id: deepseek-ui
+      name: dsh-deepseek-ui

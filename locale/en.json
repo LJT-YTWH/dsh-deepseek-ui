@@ -1,0 +1,159 @@
+{
+  "meta": {
+    "title": "DeepSeek UI",
+    "description": "Turns DeepSeek Harness into the DeepSeek app: official artwork and palette, a time-grouped sidebar, a system settings window with wallet balance and Usage/Top-up actions, the collapsed window-chrome pill, and a chat-demo conversation and composer. Sessions, panels, shortcuts, and account data stay on the shipped implementations.",
+    "detail": "docs/DETAIL.md"
+  },
+  "brand": {
+    "fallback": "DeepSeek"
+  },
+  "sidebar": {
+    "newSession": "New chat",
+    "newSessionLabel": "Start a new chat",
+    "collapse": "Collapse sidebar",
+    "expand": "Expand sidebar",
+    "settings": "Settings",
+    "sessions": "Chats",
+    "railLabel": "Navigation",
+    "openRail": "Open navigation",
+    "untitled": "Untitled chat",
+    "search": "Search chats",
+    "searchPlaceholder": "Search chats…",
+    "more": "More",
+    "rename": "Rename",
+    "renameLabel": "Chat name",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "archive": "Archive",
+    "unarchive": "Unarchive",
+    "delete": "Delete chat",
+    "empty": "No chats yet. Start one with New chat above.",
+    "groups": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "week": "Previous 7 days",
+      "month": "Previous 30 days",
+      "pinned": "Pinned",
+      "archived": "Archived"
+    },
+    "confirm": {
+      "delete": {
+        "title": "Delete chat",
+        "body": "The chat log and its derived data are removed permanently. This cannot be undone.",
+        "action": "Delete"
+      },
+      "archiveRunning": {
+        "title": "Chat is running",
+        "body": "Archiving stops the work it is currently running."
+      },
+      "stopAndArchive": "Stop and archive"
+    },
+    "newChatTitle": "New chat",
+    "panels": "Panels"
+  },
+  "sheet": {
+    "title": "Settings",
+    "close": "Close",
+    "features": "Features",
+    "preferences": "Preferences",
+    "more": "More",
+    "back": "Back",
+    "openHostSettings": "Open all settings",
+    "panels": "Panels",
+    "appearance": "Appearance",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "themeLabel": "Theme",
+    "shortcuts": "Keyboard shortcuts",
+    "about": {
+      "name": "DeepSeek UI",
+      "version": "Version",
+      "tagline": "The chat-demo visual system on DeepSeek Harness",
+      "source": "Artwork and palette from chat-demo (MIT) and official DeepSeek Harness assets",
+      "restore": "Disable or uninstall this plugin to restore the shipped interface"
+    },
+    "aboutText": "DeepSeek UI · chat-demo visual system on DeepSeek Harness",
+    "modelLabel": "Model",
+    "modelHint": "Choose the model in the composer",
+    "emptyPanels": "No panels are registered",
+    "lede": "Everything you use day to day lives here.",
+    "shortcutsHint": "Configured in the full settings dialog",
+    "sections": {
+      "demo": "DeepSeek UI",
+      "general": "General",
+      "panels": "Panels",
+      "shortcuts": "Shortcuts",
+      "data": "Data",
+      "terms": "Terms"
+    },
+    "general": {
+      "themeHint": "Follow system uses the macOS light/dark switch",
+      "hostSettings": "All settings",
+      "hostSettingsHint": "Open every DeepSeek Harness settings page (models, plugins, subagents, …)",
+      "openAction": "Open"
+    },
+    "panelsHint": "Pick a row to open that panel. Panels registered by other plugins appear here automatically.",
+    "shortcutsEmpty": "No shortcuts are available",
+    "shortcutsHint2": "Edit the full list in the host settings",
+    "systemTitle": "System Settings",
+    "languageLabel": "Language",
+    "data": {
+      "plugins": "Plugins",
+      "pluginsHint": "Install, enable, or remove plugins",
+      "hostSettings": "All settings",
+      "hostSettingsHint": "Host pages for models, account, subagents, and the rest",
+      "version": "Version"
+    },
+    "terms": {
+      "mit": "This plugin is released under the MIT license",
+      "sources": "Artwork and palette from chat-demo (MIT) and official DeepSeek Harness assets",
+      "asIs": "Provided “as is”, without warranty of any kind"
+    },
+    "pane": {
+      "demo": "Account balance and quick actions",
+      "general": "Theme, language, and version",
+      "panels": "Global panels registered by the host",
+      "shortcuts": "Keyboard shortcuts in effect",
+      "data": "Plugin and host settings entry points",
+      "terms": "License and provenance"
+    },
+    "account": {
+      "balance": "Balance",
+      "bonus": "Bonus",
+      "usage": "Usage",
+      "topUp": "Top up",
+      "refresh": "Refresh balance",
+      "loading": "Loading…",
+      "failed": "Balance could not be read; use Usage to check on the platform",
+      "signedOut": "Not signed in to DeepSeek",
+      "signedOutHint": "Sign in to see the balance, usage, and top-up entry points here",
+      "openAccount": "Open account settings",
+      "signedIn": "Signed in"
+    },
+    "sectionLede": "DeepSeek UI's own appearance settings. Account balance, models, plugins, and the rest stay on the original Settings pages.",
+    "panelsTitle": "Entry points",
+    "shortcutsTitle": "Shortcuts"
+  },
+  "leading": {
+    "openSidebar": "Open sidebar",
+    "newSession": "New chat",
+    "search": "Search chats"
+  },
+  "common": {
+    "cancel": "Cancel"
+  },
+  "composerCaveat": "AI-generated content, please verify",
+  "settingsTitle": "DeepSeek UI",
+  "workspace": {
+    "fixedLabel": "Fixed workspace",
+    "profileFallback": "The Documents folder was not available, so the fixed workspace is at"
+  },
+  "presetTip": {
+    "title": "Want the official app experience?",
+    "body": "These modes work best with the Flash model and low thinking effort — that pairing feels closest to the official app. Both can be switched under the composer at any time.",
+    "today": "Don't show again today",
+    "never": "Don't show again",
+    "confirm": "Got it"
+  }
+}

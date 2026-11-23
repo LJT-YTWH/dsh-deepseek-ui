@@ -1,0 +1,815 @@
+/*
+ * chat-demo sidebar, ported 1:1.
+ *
+ * Geometry and type come from chat-demo v0.1.3 (MIT):
+ *   src/components/sider/Sider.module.css          column, top row, New chat pill,
+ *                                                  section captions, footer settings row
+ *   src/components/sider/SessionItem.module.css    session row, active fill, hover actions,
+ *                                                  inline rename field
+ * Flattened to plain CSS (the demo uses nested rules) and scoped under
+ * `html[data-dsui]` so disabling the plugin removes the skin with the attribute.
+ */
+
+html[data-dsui] .dsui-sider {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 6px 12px 0;
+  border-right: 1px solid var(--dsw-alias-border-l1);
+  background-color: var(--dsw-specific-sidebar-fill);
+  color: var(--dsw-alias-label-primary);
+  font-size: 14px;
+}
+
+html[data-dsui] .dsui-sider--drawer {
+  border-right: none;
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
+  box-shadow: var(--dsw-shadow-lv3);
+}
+
+/* ---- top row: brand + collapse ---- */
+
+/* The macOS hiddenInset strip clears the traffic lights and keeps the toggle. */
+html[data-dsui] .dsui-top-strip {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  height: 52px;
+  padding: 0 4px;
+}
+
+html[data-dsui] .dsui-sider-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  box-sizing: border-box;
+  height: 48px;
+  margin-bottom: 16px;
+  padding: 15px 0 10px 4px;
+  flex-shrink: 0;
+}
+
+html[data-dsui] .dsui-brand {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  padding-left: 4px;
+}
+
+html[data-dsui] .dsui-brand-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: var(--dsw-alias-brand-primary);
+}
+
+html[data-dsui] .dsui-brand-wordmark {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 20px;
+  line-height: 22px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--dsw-alias-brand-primary);
+}
+
+html[data-dsui] .dsui-sider-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+html[data-dsui] .dsui-collapse,
+html[data-dsui] .dsui-search-toggle {
+  width: 28px;
+  height: 28px;
+}
+
+html[data-dsui] .dsui-search-toggle--on {
+  background-color: var(--dsw-alias-interactive-bg-hover);
+  color: var(--dsw-alias-label-primary);
+}
+
+/* ---- New chat pill ---- */
+
+html[data-dsui] .dsui-new-chat-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+html[data-dsui] .dsui-new-chat-row .dsui-new-chat {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+}
+
+/* The action a plug-in seats beside New session (DeepSeek chat import) wears the
+   same surface as the pill: identical height, 100px corner, elevated fill, and
+   hover lift — only its content differs. */
+html[data-dsui] .dsui-new-chat-row > :not(.dsui-new-chat) {
+  flex: none;
+  display: flex;
+  align-items: center;
+}
+
+html[data-dsui] .dsui-new-chat-row button:not(.dsui-new-chat) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid rgba(103, 158, 254, 0);
+  border-radius: 100px;
+  background: var(--dsw-alias-button-elevated-fill);
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  cursor: pointer;
+  transition: box-shadow var(--ds-transition-duration-slow, 0.3s) var(--ds-ease-in-out, ease);
+  box-shadow:
+    0 -2px 2px rgba(72, 104, 178, 0.04),
+    0 2px 2px rgba(106, 111, 117, 0.09),
+    0 1px 2px rgba(72, 104, 178, 0.08);
+}
+
+html[data-dsui] .dsui-new-chat-row button:not(.dsui-new-chat) > svg {
+  width: 16px;
+  height: 16px;
+}
+
+html[data-dsui] .dsui-new-chat-row button:not(.dsui-new-chat):hover {
+  background: var(--dsw-alias-button-elevated-fill);
+  box-shadow:
+    0 4px 4px 0 rgba(72, 104, 178, 0.04),
+    0 -3px 4px 0 rgba(72, 104, 178, 0.04),
+    0 6px 6px 0 rgba(106, 111, 117, 0.1);
+}
+
+html[data-dsui] .dsui-new-chat-row button:not(.dsui-new-chat):focus-visible {
+  outline: 2px solid var(--dsw-alias-button-primary-fill);
+  outline-offset: 2px;
+}
+
+html[data-dsui] body[data-ds-dark-theme] .dsui-new-chat-row button:not(.dsui-new-chat) {
+  border: none;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.1),
+    0 2px 4px rgba(106, 111, 117, 0.08);
+}
+
+html[data-dsui] .dsui-new-chat {
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid rgba(103, 158, 254, 0);
+  border-radius: 100px;
+  background: var(--dsw-alias-button-elevated-fill);
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  box-shadow:
+    0 -2px 2px rgba(72, 104, 178, 0.04),
+    0 2px 2px rgba(106, 111, 117, 0.09),
+    0 1px 2px rgba(72, 104, 178, 0.08);
+  transition: box-shadow var(--ds-transition-duration-slow, 0.3s) var(--ds-ease-in-out, ease);
+}
+
+html[data-dsui] .dsui-new-chat:hover {
+  box-shadow:
+    0 4px 4px 0 rgba(72, 104, 178, 0.04),
+    0 -3px 4px 0 rgba(72, 104, 178, 0.04),
+    0 6px 6px 0 rgba(106, 111, 117, 0.1);
+}
+
+html[data-dsui] .dsui-new-chat:focus-visible {
+  outline: 2px solid var(--dsw-alias-button-primary-fill);
+  outline-offset: 2px;
+}
+
+html[data-dsui] body[data-ds-dark-theme] .dsui-new-chat {
+  border: none;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.1),
+    0 2px 4px rgba(106, 111, 117, 0.08);
+}
+
+html[data-dsui] .dsui-new-chat-icon {
+  display: flex;
+  align-items: center;
+  margin-right: 6px;
+}
+
+/* ---- inline session search (replaces the shipped browser's search) ---- */
+
+html[data-dsui] .dsui-search-row {
+  flex-shrink: 0;
+  margin-top: 8px;
+}
+
+html[data-dsui] .dsui-search-input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--dsw-alias-border-l1);
+  border-radius: 12px;
+  outline: none;
+  background-color: var(--dsw-alias-bg-layer-2);
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  font-size: 13px;
+}
+
+html[data-dsui] .dsui-search-input:focus {
+  border-color: var(--dsw-alias-brand-primary);
+}
+
+html[data-dsui] .dsui-search-input::placeholder {
+  color: var(--dsw-alias-label-caption);
+}
+
+/* ---- scrolling session list ---- */
+
+html[data-dsui] .dsui-sider-list {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  margin-top: 24px;
+}
+
+html[data-dsui] .dsui-sider-scroll {
+  box-sizing: border-box;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  margin: 0 -2px;
+  padding: 0 2px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-color, rgba(0, 0, 0, 0.08)) transparent;
+}
+
+html[data-dsui] .dsui-section {
+  position: relative;
+}
+
+html[data-dsui] .dsui-section:first-child {
+  margin-top: 0;
+}
+
+html[data-dsui] .dsui-section {
+  margin-top: 16px;
+  padding-top: 4px;
+}
+
+html[data-dsui] .dsui-group-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 2px 10px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--dsw-alias-label-tertiary);
+  background-color: var(--dsw-specific-sidebar-fill);
+  user-select: none;
+}
+
+html[data-dsui] .dsui-group-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 2px 10px;
+  border: none;
+  background: none;
+  color: var(--dsw-alias-label-tertiary);
+  font: inherit;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+}
+
+html[data-dsui] .dsui-group-count {
+  color: var(--dsw-alias-label-caption);
+}
+
+html[data-dsui] .dsui-group-chevron {
+  margin-left: auto;
+  transition: transform var(--ds-transition-duration, 0.2s) var(--ds-ease-in-out, ease);
+}
+
+html[data-dsui] .dsui-group-chevron--open {
+  transform: rotate(90deg);
+}
+
+/* ---- one session row (SessionItem) ---- */
+
+html[data-dsui] .dsui-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 40px;
+  padding: 9px 6px 9px 10px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--dsw-alias-label-primary);
+  cursor: pointer;
+  user-select: none;
+}
+
+html[data-dsui] .dsui-item--active {
+  background-color: var(--dsw-specific-sidebar-nav-item-active-accent);
+  color: var(--dsw-alias-brand-primary-invert);
+}
+
+html[data-dsui] .dsui-item-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  line-height: 18px;
+}
+
+html[data-dsui] .dsui-item-actions {
+  display: none;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 2px;
+  margin-left: 4px;
+}
+
+html[data-dsui] .dsui-item-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--dsw-alias-label-secondary);
+  cursor: pointer;
+}
+
+html[data-dsui] .dsui-item--active .dsui-item-action {
+  color: var(--dsw-alias-brand-primary-invert);
+}
+
+html[data-dsui] .dsui-item-action:hover {
+  background-color: var(--dsw-alias-interactive-bg-hover);
+}
+
+@media (hover: hover) {
+  html[data-dsui] .dsui-item:not(.dsui-item--active):hover {
+    background-color: var(--dsw-specific-sidebar-nav-item-hover);
+  }
+
+  html[data-dsui] .dsui-item:hover .dsui-item-actions,
+  html[data-dsui] .dsui-item--active .dsui-item-actions,
+  html[data-dsui] .dsui-item:focus-within .dsui-item-actions {
+    display: flex;
+  }
+}
+
+@media (hover: none) {
+  html[data-dsui] .dsui-item-actions {
+    display: flex;
+  }
+}
+
+html[data-dsui] .dsui-item:focus-visible {
+  outline: 2px solid var(--dsw-alias-button-primary-fill);
+  outline-offset: -2px;
+}
+
+/* Inline rename (SessionItem .renameInput). */
+html[data-dsui] .dsui-rename-input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid var(--dsw-alias-brand-primary);
+  border-radius: 12px;
+  outline: none;
+  background-color: var(--dsw-specific-input-major);
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  font-size: 14px;
+}
+
+html[data-dsui] .dsui-empty {
+  margin: 0;
+  padding: 18px 10px;
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+/* ---- row overflow menu ---- */
+
+html[data-dsui] .dsui-menu {
+  position: fixed;
+  z-index: 1000;
+  min-width: 184px;
+  padding: 4px;
+  border: 1px solid var(--dsw-alias-border-l1);
+  border-radius: 12px;
+  background-color: var(--dsw-alias-bg-layer-3);
+  box-shadow: var(--dsw-shadow-lv3);
+}
+
+html[data-dsui] .dsui-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+html[data-dsui] .dsui-menu-item:hover {
+  background-color: var(--dsw-alias-interactive-bg-hover);
+}
+
+html[data-dsui] .dsui-menu-item--danger {
+  color: var(--dsw-alias-state-error-primary);
+}
+
+html[data-dsui] .dsui-menu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: currentColor;
+}
+
+/* ---- footer ---- */
+
+html[data-dsui] .dsui-sider-bottom {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 2px;
+  min-height: 64px;
+  padding: 4px 0 8px;
+}
+
+html[data-dsui] .dsui-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+html[data-dsui] .dsui-footer-actions:empty {
+  display: none;
+}
+
+html[data-dsui] .dsui-settings-row {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  margin-block: auto;
+  padding: 6px 2px 6px 6px;
+  border: none;
+  border-radius: 12px;
+  background: none;
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+}
+
+html[data-dsui] .dsui-settings-row:hover {
+  background-color: var(--dsw-specific-sidebar-nav-item-hover);
+}
+
+html[data-dsui] .dsui-settings-row:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--dsw-alias-button-primary-fill);
+}
+
+html[data-dsui] .dsui-settings-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  color: var(--dsw-alias-label-primary);
+}
+
+html[data-dsui] .dsui-settings-label {
+  min-width: 0;
+  margin-left: 4px;
+  overflow: hidden;
+  font-size: 14px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--dsw-alias-label-primary);
+}
+
+/* The shipped Settings seat stays mounted but invisible. */
+html[data-dsui] .dsui-host-seats {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---- collapsed rail (web keeps a 56px column) ---- */
+
+html[data-dsui] .dsui-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 12px 0;
+  border-right: 1px solid var(--dsw-alias-border-l1);
+  background-color: var(--dsw-specific-sidebar-fill);
+}
+
+html[data-dsui] .dsui-rail-spacer {
+  flex: 1;
+}
+
+html[data-dsui] .dsui-rail-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 10px;
+  background: none;
+  color: var(--dsw-alias-label-secondary);
+  cursor: pointer;
+}
+
+html[data-dsui] .dsui-rail-button:hover {
+  background-color: var(--dsw-specific-sidebar-nav-item-hover);
+  color: var(--dsw-alias-label-primary);
+}
+
+html[data-dsui] .dsui-rail-button:focus-visible {
+  outline: 2px solid var(--dsw-alias-button-primary-fill);
+}
+
+/* ---- window-chrome seat beside the traffic lights / drawer reopen ---- */
+
+/*
+ * The frame publishes `--dsh-frame-leading-clearance` for a band holding two
+ * 28px controls. This seat is wider (fish + a three-button pill), so the plugin
+ * republishes the clearance for its own measured width; the conversation title
+ * row pads by it instead of running under the controls.
+ *
+ *   darwin, column collapsed or drawer: seat starts at x=88
+ *     88 + (26 fish + 12 gap + 2 + 30*3 + 2*2 pill) + 8 air = 232
+ *   darwin fullscreen: seat starts at x=12  → 154
+ */
+html[data-dsui][data-platform='darwin'] [data-sidebar-collapsed],
+html[data-dsui][data-platform='darwin'] [data-sidebar-drawer] {
+  --dsh-frame-leading-clearance: 232px;
+}
+
+/* Windows keeps no rail either: the caption's leading seat is the only way back,
+   and it now carries the same fish + three-control pill. Its clearance is the
+   pill itself (no traffic lights in front of it). */
+html[data-dsui][data-platform='win32'] [data-sidebar-collapsed],
+html[data-dsui][data-platform='win32'] [data-sidebar-drawer],
+html[data-dsui][data-windows-titlebar] [data-sidebar-collapsed],
+html[data-dsui][data-windows-titlebar] [data-sidebar-drawer] {
+  --dsh-frame-leading-clearance: 148px;
+}
+
+html[data-dsui][data-platform='darwin'][data-fullscreen] [data-sidebar-collapsed],
+html[data-dsui][data-platform='darwin'][data-fullscreen] [data-sidebar-drawer] {
+  --dsh-frame-leading-clearance: 154px;
+}
+
+/* The collapsed desktop layout: the official fish, then one pill holding the
+   expand control, session search, and New chat. */
+html[data-dsui] .dsui-leading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Windows caption cluster: the collapsed column is zero-width, so the same
+   fish + pill is fixed into the native caption row (shipped sidebar position). */
+html[data-dsui][data-windows-titlebar] .dsui-caption-controls,
+html[data-dsui][data-platform='win32'] .dsui-caption-controls {
+  position: fixed;
+  top: calc((var(--dsh-windows-titlebar-height, 40px) - 30px) / 2);
+  left: 12px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  -webkit-app-region: no-drag;
+}
+
+html[data-dsui] .dsui-leading-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: var(--dsw-alias-brand-primary);
+}
+
+html[data-dsui] .dsui-leading-pill {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  box-sizing: border-box;
+  height: 30px;
+  padding: 1px;
+  border: 1px solid var(--dsw-alias-border-l1);
+  border-radius: 999px;
+  background-color: var(--dsw-alias-bg-layer-3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+html[data-dsui] .dsui-leading-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 999px;
+  background: none;
+  color: var(--dsw-alias-label-primary);
+  cursor: pointer;
+}
+
+/* The browser drawer keeps one compact opener: the footprint the frame's
+   clearance expects when there is no desktop chrome row. */
+/* Shipped icons ship at fixed intrinsic sizes; pin them so the pill keeps the
+   compact 16px glyph rhythm of the application's own chrome. */
+html[data-dsui] .dsui-leading-button > svg {
+  width: 16px;
+  height: 16px;
+}
+
+html[data-dsui] .dsui-leading-brand > svg {
+  width: 24px;
+  height: 24px;
+}
+
+html[data-dsui] .dsui-leading:not(:has(.dsui-leading-pill)) .dsui-leading-button {
+  width: 28px;
+  height: 28px;
+}
+
+html[data-dsui] .dsui-leading-button:hover {
+  background-color: var(--dsw-alias-interactive-bg-hover);
+}
+
+html[data-dsui] .dsui-leading-button:focus-visible {
+  outline: 2px solid var(--dsw-alias-button-primary-fill);
+  outline-offset: -2px;
+}
+
+@media (max-width: 767px) {
+  html[data-dsui] .dsui-sider {
+    padding: 6px 12px 0;
+  }
+
+  html[data-dsui] .dsui-sider-list {
+    margin-top: 16px;
+  }
+
+  html[data-dsui] .dsui-group-header,
+  html[data-dsui] .dsui-group-toggle {
+    padding: 4px 10px 3px;
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  html[data-dsui] .dsui-item {
+    height: 44px;
+    padding: 11px 6px 11px 12px;
+    border-radius: 16px;
+    font-size: 16px;
+  }
+
+  html[data-dsui] .dsui-item-title {
+    line-height: 22px;
+  }
+
+  html[data-dsui] .dsui-rename-input {
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 16px;
+    font-size: 16px;
+  }
+
+  html[data-dsui] .dsui-settings-row {
+    padding: 9px 10px;
+  }
+
+  html[data-dsui] .dsui-settings-icon {
+    width: auto;
+    height: auto;
+  }
+
+  html[data-dsui] .dsui-settings-label {
+    margin-left: 10px;
+    font-size: 16px;
+    line-height: 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-dsui] .dsui-new-chat,
+  html[data-dsui] .dsui-group-chevron {
+    transition: none;
+  }
+}
+
+/* ---- footer row: Settings + the panels launcher added by this plugin ---- */
+
+html[data-dsui] .dsui-bottom-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+html[data-dsui] .dsui-bottom-row .dsui-settings-row {
+  flex: 1;
+  min-width: 0;
+}
+
+html[data-dsui] .dsui-panels-button {
+  flex-shrink: 0;
+  color: var(--dsw-alias-label-secondary);
+}
+
+/* ---- quick pin on a row ---- */
+
+html[data-dsui] .dsui-item-action--on {
+  color: var(--dsw-alias-brand-primary);
+}
+
+html[data-dsui] .dsui-item--active .dsui-item-action--on {
+  color: var(--dsw-alias-brand-primary-invert);
+}

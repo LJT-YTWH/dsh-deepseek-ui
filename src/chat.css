@@ -1,0 +1,404 @@
+/* Conversation skin: the chat-demo message system over the host Chat flow.
+ *
+ * Scope: every rule starts with html[data-dsui], so disabling the plugin puts the
+ * shipped conversation CSS back with no residue.
+ *
+ * Layout note: each host chat row is a `[data-chat-flow-kind]` element whose
+ * children arrive through the `display: contents` slot anchor
+ * `[data-slot="conversation.chat.node"]`, which generates no box. Vertical
+ * rhythm therefore rides padding on the renderer element inside a row, never a
+ * margin on a wrapper box, and the
+ * host's own inter-row gaps (which its fold/scroll animations transition) are
+ * left alone. Rows are addressed from their kind attribute, not from the flow
+ * outlet, because a folded process group re-parents its member rows into a
+ * second `[data-chat-flow]` box of its own.
+ *
+ * Additive only: nothing here hides content, changes hit targets, or takes a
+ * host element out of the pointer path.
+ *
+ * Host seams relied on (stable data attributes, never hashed module classes):
+ *   [data-conversation-content]                   ConversationContent root; owns --dsh-chat-content-width
+ *   [data-conversation-scroll]                    the conversation scrollport
+ *   [data-chat-flow]                              Chat message column (also the process-group body)
+ *   [data-step-process-content]                   process-group member box
+ *   [data-slot="conversation.chat.flow"]          flow outlet anchor (display: contents)
+ *   [data-slot="conversation.chat.node"]          per-row node outlet anchor
+ *   [data-chat-flow-kind="..."]                   row kind: user, steering, assistant-step,
+ *                                                 tool-call, turn-tail, turn-process, question-reply
+ *   [data-message-bubble]                         primitives UserMessageBubble surface
+ *   [data-turn-tail]                              TurnTailNodeView root (finished-turn actions)
+ *   [data-clock="start|end"]                      MessageIconActions row
+ *   [data-variant="think"] / [data-expanded]      ReasoningRow root and open state
+ *   [data-markdown-variant="compact"]             compact reasoning markdown root
+ *   [data-disclosure-header]                      DisclosureRow header (sticky inside an open row)
+ *   [data-chat-call-id]                           ToolCallTree call row
+ *   .md-code-block / [data-code-block-banner] / [data-code-block-content]
+ *                                                 primitives code block (global, unhashed hook)
+ */
+
+/* ---------- Measure, scrollport, selection ---------- */
+
+/* Demo message measure: the 840px list minus its 44px side padding (712/36
+   below 1024px — both published by this plugin's base.css). A width the user
+   dragged still wins. The host derives the composer cap from this variable, so
+   the card follows at measure + 32px, the demo's own 776/840 pair. */
+/* chat-demo MessageList: an 840px column with 44px side padding, so the text
+   measure is 752px. The host publishes the same axis as
+   `--dsh-chat-content-width` and derives the composer cap from it, so the card
+   follows at measure + 32px — exactly the demo's 840/776 pair. */
+html[data-dsui] [data-conversation-content] {
+  /* Px-only maths on purpose: a percentage here is re-resolved on every
+     scrollport resize, reflowing rows and disturbing the chat's anchors. */
+  --dsh-chat-content-width: clamp(680px, calc(var(--dsh-conversation-column-width, 0px) * 0.64), 752px);
+}
+
+@media (max-width: 1023px) {
+  html[data-dsui] [data-conversation-content] {
+    --dsh-chat-content-width: clamp(560px, calc(var(--dsh-conversation-column-width, 0px) * 0.64), 712px);
+  }
+}
+
+/* Scrollport: tint only. Its padding, gutter, and overflow stay the host's —
+   the transcript's virtualizer and follow engine measure that box, and any
+   extra inset feeds wrong numbers into their landing maths. */
+html[data-dsui] [data-conversation-scroll] {
+  scrollbar-color: var(--scroll-color) transparent;
+  scrollbar-width: thin;
+}
+
+/* Rows shrink instead of pushing the transcript sideways: wide tables and code
+   blocks scroll inside their own boxes. */
+html[data-dsui] :is([data-slot="conversation.chat.flow"], [data-step-process-content]) > * {
+  min-width: 0;
+}
+
+/* Demo text selection: a translucent tint of the demo brand blue. */
+html[data-dsui] [data-chat-flow] ::selection {
+  background-color: color-mix(in srgb, var(--dsw-alias-brand-primary) 24%, transparent);
+  color: inherit;
+}
+
+/* ---------- Message rhythm ---------- */
+
+/* The column's foot room stays the host's: the follow engine reserves the
+   composer's height there itself, and an extra padding makes its landing
+   maths overshoot. */
+
+/* A user message owns the demo's 16px tail (UserMessage .container
+   padding-bottom: 16px); the host already contributes an inter-row gap, so
+   only the remainder is added here. */
+html[data-dsui] :is([data-chat-flow-kind="user"], [data-chat-flow-kind="steering"]) > [data-slot="conversation.chat.node"] > div {
+  padding-bottom: 8px;
+}
+
+/* A user message that follows an answer keeps that tighter rhythm (no extra
+   top space); only the transcript's first message opens with the demo's
+   .isFirst clearance of 34px above the bubble. */
+html[data-dsui] [data-slot="conversation.chat.flow"] > [data-chat-flow-kind="user"]:first-child > [data-slot="conversation.chat.node"] > div {
+  padding-top: 22px;
+}
+
+/* ---------- User message bubble ---------- */
+
+/* The demo message stack takes at most 76% of the measure (and 0.702 of it on
+   the default column — the demo's own figma share). The `conversation.chat.user.content`
+   factory outlet renders no wrapper element, so the stack is the row element's
+   direct child that holds the bubble. */
+/* The bubble cap itself is the host's (0.702 of the measure, capped at 82% of
+   the row): re-capping it here collapses against a shrink-to-fit parent. */
+
+/* The right-aligned bubble, matching the DeepSeek app: 20px radius, 10/18
+   padding, the raised bubble fill and 16/24 type. */
+html[data-dsui] :is([data-chat-flow-kind="user"], [data-chat-flow-kind="steering"], [data-chat-flow-kind="question-reply"]) [data-message-bubble] {
+  box-sizing: border-box;
+  padding: 10px 18px;
+  border-radius: 20px;
+  background-color: var(--dsw-specific-bubble);
+  color: var(--dsw-alias-label-primary);
+  font-size: 16px;
+  line-height: 24px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* The standalone bubble — the only element of its row, with no attachment
+   strip above it — keeps the same right edge and cap. */
+html[data-dsui] [data-chat-flow] [data-message-bubble]:only-child {
+  margin-left: auto;
+}
+
+/* Demo's narrow-viewport cap. */
+/* User action row: circular secondary icons with the demo hover fill. */
+html[data-dsui] :is([data-chat-flow-kind="user"], [data-chat-flow-kind="steering"]) [data-clock="start"] {
+  gap: 14px;
+}
+
+html[data-dsui] :is([data-chat-flow-kind="user"], [data-chat-flow-kind="steering"]) [data-clock="start"] button {
+  border-radius: 50%;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+@media (hover: hover) {
+  html[data-dsui] :is([data-chat-flow-kind="user"], [data-chat-flow-kind="steering"]) [data-clock="start"] button:hover {
+    background-color: var(--dsw-alias-interactive-bg-hover);
+    color: var(--dsw-alias-label-primary);
+  }
+}
+
+/* ---------- Assistant answer + finished-turn actions ---------- */
+
+/* Assistant body: no bubble, full measure, demo 16/28 markdown type in the
+   primary label colour, and the demo's 6px under the body. */
+html[data-dsui] [data-chat-flow-kind="assistant-step"] > [data-slot="conversation.chat.node"] > div {
+  padding-bottom: 4px;
+  color: var(--dsw-alias-label-primary);
+  font: var(--dsw-font-markdown-base);
+}
+
+/* Demo heading ladder (markdown.css); sizes come from the ported tokens. The
+   think overrides further down own reasoning headings at a higher weight. */
+html[data-dsui] [data-chat-flow-kind="assistant-step"] :where(h1) {
+  margin: 32px 0 16px;
+  font: var(--dsw-font-markdown-h1);
+}
+
+html[data-dsui] [data-chat-flow-kind="assistant-step"] :where(h2) {
+  margin: 32px 0 16px;
+  font: var(--dsw-font-markdown-h2);
+}
+
+html[data-dsui] [data-chat-flow-kind="assistant-step"] :where(h3) {
+  margin: 32px 0 16px;
+  font: var(--dsw-font-markdown-h3);
+}
+
+html[data-dsui] [data-chat-flow-kind="assistant-step"] :where(h4) {
+  margin: 16px 0;
+  font: var(--dsw-font-markdown-h4);
+}
+
+html[data-dsui] [data-chat-flow-kind="assistant-step"] :where(h5, h6) {
+  margin: 16px 0;
+  font: var(--dsw-font-markdown-base-strong);
+}
+
+/* The finished-turn action row (demo AssistantMessage .bottom): small icon
+   buttons in the secondary colour over the demo hover fill. */
+html[data-dsui] [data-chat-flow-kind="turn-tail"] > [data-slot="conversation.chat.node"] > [data-turn-tail] {
+  gap: 4px;
+  padding-bottom: 16px;
+}
+
+/* The row's own flow gap (12px by default) is what pushed the action row down
+   the furthest; a finished turn needs only a hairline between body and actions.
+   Scoped deep enough to outrank the shipped `response + next` gap rule, which
+   re-declares the variable on this very row. */
+html[data-dsui] [data-chat-flow-kind="turn-tail"] {
+  --dsh-chat-flow-gap: 4px !important;
+}
+
+html[data-dsui] [data-chat-flow-kind="turn-tail"] [data-clock="end"] {
+  gap: 14px;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+html[data-dsui] [data-chat-flow-kind="turn-tail"] [data-clock="end"] button {
+  border-radius: 50%;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+@media (hover: hover) {
+  html[data-dsui] [data-chat-flow-kind="turn-tail"] [data-clock="end"] button:hover {
+    background-color: var(--dsw-alias-interactive-bg-hover);
+    color: var(--dsw-alias-label-primary);
+  }
+}
+
+/* Turn duration control: the demo's flat label treatment instead of a ruled
+   band. */
+html[data-dsui] [data-chat-flow-kind="turn-process"] button {
+  border-bottom-color: var(--dsw-alias-border-l1);
+  color: var(--dsw-alias-label-secondary);
+}
+
+/* ---------- Reasoning (think) and tool-call cards ---------- */
+
+/* Think text reads the demo's small tier in the secondary label colour
+   (thinking.markdown.css). The collapsed row keeps the host's dense 24px
+   metric, so no padding is added there. */
+html[data-dsui] [data-chat-flow] [data-variant="think"] {
+  color: var(--dsw-alias-label-secondary);
+  font: var(--dsw-font-markdown-small);
+}
+
+html[data-dsui] [data-chat-flow] [data-variant="think"] [data-markdown-variant="compact"] {
+  color: var(--dsw-alias-label-secondary);
+  font: var(--dsw-font-markdown-small);
+}
+
+html[data-dsui] [data-chat-flow] [data-variant="think"] :where(h1, h2, h3, h4, h5, h6) {
+  margin: 12px 0;
+  font: var(--dsw-font-markdown-small-strong);
+}
+
+html[data-dsui] [data-chat-flow] [data-variant="think"] :where(th) {
+  font: var(--dsw-font-markdown-small-strong);
+}
+
+html[data-dsui] [data-chat-flow] [data-variant="think"] :where(td) {
+  font: var(--dsw-font-markdown-small);
+}
+
+/* Reasoning, the app's way: no card at all. The header is one flat line whose
+   glyph and title read in the brand colour, and the open body hangs off a
+   hairline rule with the small secondary tier. */
+html[data-dsui] [data-chat-flow] [data-variant="think"][data-expanded] {
+  box-sizing: border-box;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+}
+
+html[data-dsui] [data-chat-flow] [data-variant="think"] [data-disclosure-header] {
+  background-color: transparent;
+}
+
+/* The disclosure glyph carries the brand tint; the label and its preview keep
+   the neutral tiers. The header is the first child of the open row's wrapper
+   and the body is whatever follows it — structural, hash-free hooks. */
+html[data-dsui] [data-chat-flow] [data-variant="think"] [data-disclosure-row] > :first-child svg {
+  color: var(--dsw-alias-brand-text);
+}
+
+html[data-dsui] [data-chat-flow] [data-variant="think"][data-expanded] [data-open] > :not([data-disclosure-header]) {
+  box-sizing: border-box;
+  margin: 2px 0 6px 3px;
+  padding: 2px 0 4px 16px;
+  border-left: 1px solid var(--dsw-alias-border-l2);
+  color: var(--dsw-alias-label-secondary);
+}
+
+/* One tool call at the top of its tree: flat demo card. Nested sub-calls keep
+   the host's indented column, so cards never nest inside themselves. */
+/* chat-demo's reply area draws its disclosure rows flat: a 34px title line in
+   the secondary label colour that turns primary on hover, no card, no border.
+   The tool card root is stripped back to that surface and the row's own hover
+   carries the affordance. */
+html[data-dsui] [data-chat-flow-kind="tool-call"] > [data-slot="conversation.chat.node"] > [data-chat-call-id] {
+  box-sizing: border-box;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background-color: transparent;
+  color: var(--dsw-alias-label-secondary);
+}
+
+html[data-dsui] [data-chat-flow-kind="tool-call"] > [data-slot="conversation.chat.node"] > [data-chat-call-id]:hover {
+  color: var(--dsw-alias-label-primary);
+}
+
+/* Nested tool calls keep the host's indent rule; only its stroke lightens. */
+html[data-dsui] [data-chat-flow] [data-subcalls] {
+  border-left-color: var(--dsw-alias-border-l1);
+}
+
+/* ---------- Markdown body ---------- */
+
+html[data-dsui] [data-chat-flow] :where(pre) {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* Inline code (demo markdown.css): 6px radius, code font, markdown inline-code
+   fill. The host sheet pins `.875em !important`; the demo renders 13px, so this
+   size keeps !important and the heading rule below restores the inherited
+   size. */
+html[data-dsui] [data-chat-flow] :not(pre) > code {
+  padding: 0 5px;
+  border: 0.5px solid var(--dsw-alias-border-l1);
+  border-radius: 6px;
+  background-color: var(--dsw-alias-markdown-inline-code);
+  color: var(--dsw-alias-label-primary);
+  font-family: var(--ds-font-family-code);
+  font-size: 13px !important;
+  line-height: 22px;
+}
+
+/* Code inside a heading keeps the heading's own size (host parity). */
+html[data-dsui] [data-chat-flow] :is(h1, h2, h3, h4, h5, h6) code {
+  font-size: inherit !important;
+  line-height: inherit;
+}
+
+/* Code block (demo .md-code-block): 12px radius, banner tint on the header,
+   block tint behind the code, code-block type on the body. The --dsl-* set is
+   the primitive's own theming contract, so the primitive keeps painting. */
+html[data-dsui] [data-chat-flow] .md-code-block {
+  --dsl-code-block-background: var(--dsw-alias-markdown-code-block);
+  --dsl-code-block-banner-background-color: var(--dsw-alias-markdown-code-block-banner);
+  --dsl-code-block-border-radius: 12px;
+  --dsl-code-block-banner-font: var(--dsw-font-xs-13);
+  --dsl-code-block-content-font: var(--dsw-font-markdown-code-block);
+  overflow: hidden;
+  border: 0.5px solid var(--dsw-alias-border-l1);
+  border-radius: 12px;
+  background-color: var(--dsw-alias-markdown-code-block);
+}
+
+html[data-dsui] [data-chat-flow] .md-code-block [data-code-block-banner] {
+  padding: 9px 14px;
+  background-color: var(--dsw-alias-markdown-code-block-banner);
+  color: var(--dsw-alias-label-secondary);
+  font: var(--dsw-font-xs-13);
+}
+
+html[data-dsui] [data-chat-flow] .md-code-block [data-code-block-content] pre {
+  max-width: 100%;
+  padding: 16px;
+  overflow-x: auto;
+  border-radius: 0 0 12px 12px;
+  background-color: var(--dsw-alias-markdown-code-block);
+  color: var(--dsw-alias-label-primary);
+  font: var(--dsw-font-markdown-code-block);
+}
+
+/* Tables (demo markdown.css): the table ladder over the demo border pair. */
+html[data-dsui] [data-chat-flow] :where(th) {
+  border-bottom: 1px solid var(--dsw-alias-border-l3);
+  font: var(--dsw-font-markdown-table-head);
+  text-align: start;
+}
+
+html[data-dsui] [data-chat-flow] :where(td) {
+  border-bottom: 1px solid var(--dsw-alias-border-l2);
+  font: var(--dsw-font-markdown-table);
+}
+
+/* Blockquote and rule. */
+html[data-dsui] [data-chat-flow] :where(blockquote) {
+  margin: 16px 0;
+  padding-left: 14px;
+  border-left: 2px solid var(--dsw-alias-label-caption);
+  color: var(--dsw-alias-label-secondary);
+}
+
+html[data-dsui] [data-chat-flow] :where(hr) {
+  height: 1px;
+  margin: 32px 0;
+  border: none;
+  background-color: var(--dsw-alias-border-l2);
+}
+
+/* Links use the demo brand text colour (demo markdown.css .ds-markdown a). */
+html[data-dsui] [data-chat-flow] :where(a) {
+  color: var(--dsw-alias-brand-text);
+  font-weight: 500;
+}
+
+@media (hover: hover) {
+  html[data-dsui] [data-chat-flow] a:hover {
+    text-decoration: underline;
+  }
+}

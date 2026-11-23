@@ -1,0 +1,539 @@
+/*
+ * Settings surface.
+ *
+ * The shipped Settings window keeps every original page (account, general,
+ * models, plugins, …) and its Platform overlay; this stylesheet only restyles
+ * that window to the DeepSeek application's look, then styles the plugin's own
+ * section content (theme, language, panels, shortcuts) and the feedback
+ * surfaces (confirmation dialog, notices).
+ *
+ * The window is addressed through its stable `data-shortcut-modal="settings"`
+ * hook and its structural children; its navigation buttons expose
+ * `aria-current="true"` for the active page.
+ */
+
+/* ---------- the shipped Settings window ---------- */
+
+html[data-dsui] [data-shortcut-modal="settings"] {
+  width: 900px;
+  height: min(700px, calc(100vh - 96px));
+  grid-template-columns: 220px minmax(0, 1fr);
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 20px;
+  background: var(--dsw-alias-bg-layer-2);
+  box-shadow: var(--dsw-shadow-lv3);
+  overflow: hidden;
+}
+
+html[data-dsui] [data-shortcut-modal="settings"]:focus {
+  outline: none;
+}
+
+/* Title row */
+html[data-dsui] [data-shortcut-modal="settings"] > div:first-of-type {
+  padding: 24px 20px 10px 24px;
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 600;
+}
+
+/* Navigation rail */
+html[data-dsui] [data-shortcut-modal="settings"] > nav {
+  padding: 6px 12px 16px;
+}
+
+html[data-dsui] [data-shortcut-modal="settings"] > nav button {
+  height: 40px;
+  padding: 0 12px;
+  gap: 10px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+html[data-dsui] [data-shortcut-modal="settings"] > nav button:hover {
+  background-color: var(--dsw-alias-interactive-bg-hover);
+}
+
+html[data-dsui] [data-shortcut-modal="settings"] > nav button[aria-current="true"] {
+  background-color: var(--dsw-alias-interactive-bg-active);
+}
+
+/* Content header (actions + close) */
+html[data-dsui] [data-shortcut-modal="settings"] > div:nth-of-type(2) {
+  height: 62px;
+  padding: 22px 16px 8px 8px;
+}
+
+html[data-dsui] [data-shortcut-modal="settings"] > div:nth-of-type(2) button {
+  border-radius: 8px;
+}
+
+/* Options column */
+html[data-dsui] [data-shortcut-modal="settings"] > div:nth-of-type(3) {
+  padding: 0 28px 28px 8px;
+}
+
+/* Mask behind the window */
+html[data-dsui] body > div[role="presentation"]:has(> [data-shortcut-modal="settings"]) > [aria-hidden="true"] {
+  background: rgba(10, 12, 16, 0.45);
+  backdrop-filter: blur(3px);
+}
+
+/* ---------- the plugin's own section ---------- */
+
+html[data-dsui] .dsui-section-lede {
+  margin: 0 0 16px;
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+html[data-dsui] .dsui-group {
+  margin-bottom: 18px;
+}
+
+html[data-dsui] .dsui-group:last-child {
+  margin-bottom: 0;
+}
+
+html[data-dsui] .dsui-group-title {
+  margin: 0 0 8px;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+}
+
+html[data-dsui] .dsui-group-card {
+  box-sizing: border-box;
+  padding: 4px;
+  border: 1px solid var(--dsw-alias-border-l1);
+  border-radius: 16px;
+  background-color: var(--dsw-alias-bg-layer-1);
+}
+
+html[data-dsui] .dsui-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  box-sizing: border-box;
+  min-height: 58px;
+  padding: 10px 12px;
+  border-radius: 12px;
+}
+
+html[data-dsui] .dsui-row--stretch {
+  align-items: flex-start;
+  padding-top: 14px;
+  padding-bottom: 16px;
+}
+
+html[data-dsui] .dsui-row-label {
+  flex-shrink: 0;
+  width: 110px;
+  color: var(--dsw-alias-label-primary);
+  font-size: 14px;
+  line-height: 22px;
+}
+
+html[data-dsui] .dsui-row-control {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+html[data-dsui] .dsui-row--stretch .dsui-row-control {
+  justify-content: flex-start;
+}
+
+html[data-dsui] .dsui-row-value {
+  color: var(--dsw-alias-label-secondary);
+  font-size: 13px;
+}
+
+/* Clickable rows: every hover fill carries its own radius. */
+html[data-dsui] .dsui-link-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 52px;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--ds-transition-duration, 0.2s) var(--ds-ease-in-out, ease);
+}
+
+html[data-dsui] .dsui-link-row + .dsui-link-row {
+  margin-top: 2px;
+}
+
+html[data-dsui] .dsui-link-row:hover {
+  background-color: var(--dsw-alias-interactive-bg-hover);
+}
+
+html[data-dsui] .dsui-link-row:focus-visible {
+  outline: 2px solid var(--dsw-alias-button-primary-fill);
+  outline-offset: -2px;
+}
+
+html[data-dsui] .dsui-link-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background-color: var(--dsw-alias-interactive-bg-hover);
+  color: var(--dsw-alias-label-primary);
+}
+
+html[data-dsui] .dsui-link-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+html[data-dsui] .dsui-link-label {
+  overflow: hidden;
+  color: var(--dsw-alias-label-primary);
+  font-size: 14px;
+  line-height: 22px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+html[data-dsui] .dsui-link-hint {
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 12px;
+  line-height: 17px;
+}
+
+html[data-dsui] .dsui-row-chevron {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+/* Theme cards */
+html[data-dsui] .dsui-theme-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+}
+
+html[data-dsui] .dsui-theme-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  height: 92px;
+  border: 1px solid var(--dsw-alias-border-l1);
+  border-radius: 14px;
+  background-color: var(--dsw-alias-bg-layer-2);
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color var(--ds-transition-duration, 0.2s) var(--ds-ease-in-out, ease),
+    border-color var(--ds-transition-duration, 0.2s) var(--ds-ease-in-out, ease);
+}
+
+html[data-dsui] .dsui-theme-card:hover {
+  background-color: var(--dsw-alias-interactive-bg-hover);
+  border-color: var(--dsw-alias-border-l2);
+}
+
+html[data-dsui] .dsui-theme-card--active {
+  border-color: var(--dsw-alias-brand-primary);
+  background-color: var(--dsw-alias-interactive-bg-hover);
+}
+
+html[data-dsui] .dsui-theme-card:focus-visible {
+  outline: 2px solid var(--dsw-alias-button-primary-fill);
+  outline-offset: 2px;
+}
+
+html[data-dsui] .dsui-theme-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dsw-alias-label-primary);
+}
+
+html[data-dsui] .dsui-theme-card-label {
+  line-height: 18px;
+}
+
+html[data-dsui] .dsui-theme-card-check {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: var(--dsw-alias-brand-primary);
+  color: var(--dsw-alias-label-primary-foreground);
+}
+
+/* Language picker */
+html[data-dsui] .dsui-select {
+  box-sizing: border-box;
+  max-width: 220px;
+  height: 34px;
+  padding: 0 34px 0 14px;
+  border: 1px solid var(--dsw-alias-border-l1);
+  border-radius: 999px;
+  outline: none;
+  background-color: var(--dsw-alias-bg-layer-2);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5' stroke='%2381858C' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 12px 12px;
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  font-size: 13px;
+  appearance: none;
+  cursor: pointer;
+}
+
+html[data-dsui] .dsui-select:hover {
+  background-color: var(--dsw-alias-interactive-bg-hover);
+}
+
+/* Shortcut rows */
+html[data-dsui] .dsui-key-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 46px;
+  padding: 6px 12px;
+  border-radius: 10px;
+}
+
+html[data-dsui] .dsui-key-row:hover {
+  background-color: var(--dsw-alias-interactive-bg-hover);
+}
+
+html[data-dsui] .dsui-key-label {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--dsw-alias-label-primary);
+  font-size: 14px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+html[data-dsui] .dsui-keys {
+  display: inline-flex;
+  flex-shrink: 0;
+  gap: 3px;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12px;
+}
+
+/* ---------- confirmation dialog ---------- */
+
+html[data-dsui] .dsui-confirm-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  pointer-events: auto;
+}
+
+html[data-dsui] .dsui-confirm-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(15, 17, 21, 0.34);
+  backdrop-filter: blur(2px);
+}
+
+html[data-dsui] body[data-ds-dark-theme] .dsui-confirm-backdrop {
+  background-color: rgba(0, 0, 0, 0.56);
+}
+
+html[data-dsui] .dsui-confirm {
+  position: relative;
+  box-sizing: border-box;
+  width: 380px;
+  max-width: calc(100vw - 48px);
+  padding: 20px 20px 16px;
+  border: 1px solid var(--dsw-alias-border-l1);
+  border-radius: 16px;
+  background-color: var(--dsw-alias-bg-layer-3);
+  box-shadow: var(--dsw-shadow-lv3);
+  color: var(--dsw-alias-label-primary);
+}
+
+html[data-dsui] .dsui-confirm-title {
+  margin: 0 0 8px;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+html[data-dsui] .dsui-confirm-body {
+  margin: 0 0 16px;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 14px;
+  line-height: 22px;
+}
+
+html[data-dsui] .dsui-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+html[data-dsui] .dsui-confirm-button {
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 999px;
+  background-color: var(--dsw-alias-button-elevated-fill);
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+html[data-dsui] .dsui-confirm-button:hover {
+  background-color: var(--dsw-alias-interactive-bg-hover);
+}
+
+html[data-dsui] .dsui-confirm-button--primary {
+  border-color: transparent;
+  background-color: var(--dsw-alias-button-primary-fill);
+  color: var(--dsw-alias-label-primary-foreground);
+}
+
+html[data-dsui] .dsui-confirm-button--danger {
+  border-color: transparent;
+  background-color: var(--dsw-alias-state-error-primary);
+  color: var(--dsw-alias-label-primary-foreground);
+}
+
+html[data-dsui] .dsui-confirm-button:focus-visible {
+  outline: 2px solid var(--dsw-alias-button-primary-fill);
+  outline-offset: 2px;
+}
+
+/* ---------- transient notices ---------- */
+
+html[data-dsui] .dsui-toasts {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+html[data-dsui] .dsui-toast {
+  max-width: min(520px, calc(100vw - 48px));
+  padding: 10px 14px;
+  border-radius: 12px;
+  background-color: var(--dsw-alias-toast-bg);
+  color: var(--dsw-alias-label-primary-foreground);
+  font-size: 13px;
+  line-height: 20px;
+  box-shadow: var(--dsw-shadow-lv3);
+}
+
+html[data-dsui] .dsui-toast--error {
+  background-color: var(--dsw-alias-state-error-primary);
+}
+
+
+/* The preset tip reuses the confirmation dialog's card, title, body, and
+   buttons; only the two opt-out rows and their checkboxes are new. */
+html[data-dsui] .dsui-confirm--tip {
+  width: 400px;
+}
+
+html[data-dsui] .dsui-tip-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: -2px 0 18px;
+}
+
+html[data-dsui] .dsui-tip-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--dsw-alias-label-primary);
+  font-size: 13px;
+  line-height: 20px;
+  cursor: pointer;
+  user-select: none;
+}
+
+html[data-dsui] .dsui-tip-option input {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-grid;
+  place-content: center;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  border: 1px solid var(--dsw-alias-border-l3);
+  border-radius: 5px;
+  background-color: var(--dsw-alias-bg-layer-1);
+  cursor: inherit;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+html[data-dsui] .dsui-tip-option input::after {
+  content: '';
+  width: 8px;
+  height: 4px;
+  border-left: 1.5px solid var(--dsw-alias-label-primary-foreground);
+  border-bottom: 1.5px solid var(--dsw-alias-label-primary-foreground);
+  opacity: 0;
+  transform: translateY(-1px) rotate(-45deg);
+}
+
+html[data-dsui] .dsui-tip-option:hover input {
+  border-color: var(--dsw-alias-border-l4);
+}
+
+html[data-dsui] .dsui-tip-option input:checked {
+  border-color: var(--dsw-alias-brand-primary);
+  background-color: var(--dsw-alias-brand-primary);
+}
+
+html[data-dsui] .dsui-tip-option input:checked::after {
+  opacity: 1;
+}
+
+html[data-dsui] .dsui-tip-option input:focus-visible {
+  outline: 2px solid var(--dsw-alias-button-primary-fill);
+  outline-offset: 2px;
+}

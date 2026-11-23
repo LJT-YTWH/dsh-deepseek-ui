@@ -1,0 +1,159 @@
+{
+  "meta": {
+    "title": "DeepSeek UI",
+    "description": "把 DeepSeek Harness 换成 DeepSeek 应用的样子：官方图标与配色、时间分组侧栏、系统设置窗口（含账号余额、查询用量、充值）、收起侧栏后的顶部胶囊，以及 chat-demo 风格的会话区与输入框。会话、面板、快捷键与账号数据全部沿用宿主实现。",
+    "detail": "docs/DETAIL.md"
+  },
+  "brand": {
+    "fallback": "DeepSeek"
+  },
+  "sidebar": {
+    "newSession": "开启新对话",
+    "newSessionLabel": "开启新对话",
+    "collapse": "收起侧栏",
+    "expand": "展开侧栏",
+    "settings": "设置",
+    "sessions": "对话",
+    "railLabel": "导航",
+    "openRail": "打开导航",
+    "untitled": "未命名对话",
+    "search": "搜索会话",
+    "searchPlaceholder": "搜索会话…",
+    "more": "更多",
+    "rename": "重命名",
+    "renameLabel": "会话名称",
+    "pin": "置顶",
+    "unpin": "取消置顶",
+    "archive": "归档",
+    "unarchive": "取消归档",
+    "delete": "删除会话",
+    "empty": "还没有会话。点上面的「开启新对话」开始。",
+    "groups": {
+      "today": "今天",
+      "yesterday": "昨天",
+      "week": "7 天内",
+      "month": "30 天内",
+      "pinned": "置顶",
+      "archived": "已归档"
+    },
+    "confirm": {
+      "delete": {
+        "title": "删除会话",
+        "body": "将彻底删除这条会话的日志与派生数据，无法恢复。",
+        "action": "删除"
+      },
+      "archiveRunning": {
+        "title": "会话正在运行",
+        "body": "归档前会先停止它正在执行的工作。"
+      },
+      "stopAndArchive": "停止并归档"
+    },
+    "newChatTitle": "新对话",
+    "panels": "面板"
+  },
+  "sheet": {
+    "title": "设置",
+    "close": "关闭",
+    "features": "功能入口",
+    "preferences": "偏好",
+    "more": "更多",
+    "back": "返回",
+    "openHostSettings": "打开完整设置",
+    "panels": "面板",
+    "appearance": "外观",
+    "themeLight": "浅色",
+    "themeDark": "深色",
+    "themeSystem": "跟随系统",
+    "themeLabel": "主题",
+    "shortcuts": "快捷键",
+    "about": {
+      "name": "DeepSeek UI",
+      "version": "版本",
+      "tagline": "在 DeepSeek Harness 上套用 chat-demo 视觉系统",
+      "source": "图标与配色来自 chat-demo（MIT）与 DeepSeek Harness 官方素材",
+      "restore": "禁用或卸载本插件即可恢复原生侧栏"
+    },
+    "aboutText": "DeepSeek UI · 在 DeepSeek Harness 上套用 chat-demo 视觉系统",
+    "modelLabel": "模型",
+    "modelHint": "在输入框里选择模型",
+    "emptyPanels": "暂无已注册面板",
+    "lede": "日常要用的都收在这里。",
+    "shortcutsHint": "在完整设置中调整",
+    "sections": {
+      "demo": "DeepSeek UI",
+      "general": "通用设置",
+      "panels": "面板",
+      "shortcuts": "快捷键",
+      "data": "数据管理",
+      "terms": "服务协议"
+    },
+    "general": {
+      "themeHint": "跟随系统时由 macOS 的浅色/深色开关决定",
+      "hostSettings": "完整设置",
+      "hostSettingsHint": "打开 DeepSeek Harness 的全部设置页（模型、插件、子智能体等）",
+      "openAction": "打开"
+    },
+    "panelsHint": "点任意一行打开对应面板。第三方插件注册的面板会自动出现在这里。",
+    "shortcutsEmpty": "当前没有可用的快捷键",
+    "shortcutsHint2": "完整快捷键列表在宿主设置里编辑",
+    "systemTitle": "系统设置",
+    "languageLabel": "语言",
+    "data": {
+      "plugins": "插件管理",
+      "pluginsHint": "安装、启用或卸载插件",
+      "hostSettings": "全部设置",
+      "hostSettingsHint": "模型、账号、子智能体等宿主设置页",
+      "version": "版本信息"
+    },
+    "terms": {
+      "mit": "本插件以 MIT 许可证发布",
+      "sources": "图标与配色来自 chat-demo（MIT）与 DeepSeek Harness 官方素材",
+      "asIs": "按“现状”提供，不附带任何明示或暗示的担保"
+    },
+    "pane": {
+      "demo": "账号余额与常用入口",
+      "general": "主题、语言与版本",
+      "panels": "宿主注册的全局面板",
+      "shortcuts": "当前生效的键盘快捷键",
+      "data": "插件与宿主设置入口",
+      "terms": "许可证与来源"
+    },
+    "account": {
+      "balance": "余额",
+      "bonus": "赠送余额",
+      "usage": "查询用量",
+      "topUp": "充值",
+      "refresh": "刷新余额",
+      "loading": "读取中…",
+      "failed": "余额读取失败，可点「查询用量」到平台核对",
+      "signedOut": "未登录 DeepSeek 账号",
+      "signedOutHint": "登录后可以在这里看到余额、用量与充值入口",
+      "openAccount": "打开账号设置",
+      "signedIn": "已登录"
+    },
+    "sectionLede": "这些是 DeepSeek UI 自己的外观设置；账号余额、模型、插件等仍由原版设置页提供。",
+    "panelsTitle": "功能入口",
+    "shortcutsTitle": "快捷键"
+  },
+  "leading": {
+    "openSidebar": "打开侧栏",
+    "newSession": "开启新对话",
+    "search": "搜索会话"
+  },
+  "common": {
+    "cancel": "取消"
+  },
+  "composerCaveat": "内容由 AI 生成，请仔细甄别",
+  "settingsTitle": "DeepSeek UI",
+  "workspace": {
+    "fixedLabel": "固定工作区",
+    "profileFallback": "用户文档目录不可用，固定工作区已改到"
+  },
+  "presetTip": {
+    "title": "想获得官方 App 同款效果？",
+    "body": "这个模式建议搭配「Flash 模型」，并把思考强度设为「low」，回复速度与语气会更接近官方 App。可在输入框下方随时切换。",
+    "today": "今天不再提示",
+    "never": "今后不再提示",
+    "confirm": "我知道了"
+  }
+}

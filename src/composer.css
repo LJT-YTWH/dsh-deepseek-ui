@@ -1,0 +1,189 @@
+/* Composer skin: chat-demo's input card over the host Conversation composer.
+ *
+ * Ported from chat-demo v0.1.3 `src/components/chatInput/ChatInput.module.css`
+ * (MIT):
+ *   .wrapper      24px radius, 1px hairline border, the raised input surface,
+ *                 the demo's session shadow (dropped in dark)
+ *   .textarea     16/24 draft type, 16px left inset, brand caret
+ *   .toggle       34px pill chips, hairline border, transparent fill
+ *   .sendButton   34px circle, brand fill, on-colour ink, 0.4 when disabled
+ *   .attachment   64px chips, 16px radius
+ *
+ * Surface-only: control widths stay the host's, because the shipped tool row is
+ * a measured wrapping flex row. Radii, borders, fills, and heights are skinned.
+ *
+ * Host seams (stable data attributes): `[data-composer-card]`, `[data-input-scroll]`,
+ * `[data-phase]`, `[data-composer-placeholder]`, the composer bar slot anchor, and
+ * the shipped controls' own ARIA markers (`button[aria-haspopup="listbox"]` for the
+ * add control, `button[aria-busy]` / `:has(> svg > rect)` for send and stop).
+ */
+
+/* ---------- the card ---------- */
+
+html[data-dsui] [data-slot="conversation.composer.bar"] [data-composer-card] {
+  border: 1px solid var(--dsw-alias-border-l2-darkmode-thin);
+  border-radius: 24px;
+  background: var(--dsw-specific-input-major);
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.02),
+    0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+html[data-dsui] body[data-ds-dark-theme] [data-slot="conversation.composer.bar"] [data-composer-card] {
+  box-shadow: none;
+}
+
+/* ---------- draft text ---------- */
+
+html[data-dsui] [data-slot="conversation.composer.bar"] [data-composer-card] [data-phase] {
+  color: var(--dsw-alias-label-primary);
+  caret-color: var(--dsw-alias-brand-text);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+html[data-dsui] [data-slot="conversation.composer.bar"] [data-composer-card] [data-composer-placeholder] {
+  color: var(--dsw-alias-label-caption);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+html[data-dsui] [data-slot="conversation.composer.bar"] [data-composer-card] ::selection {
+  background-color: color-mix(in srgb, var(--dsw-alias-brand-primary) 24%, transparent);
+  color: inherit;
+}
+
+/* ---------- tool row: demo pill chips ---------- */
+
+/* Mode / model chips read as the demo's 34px outlined pills. The measured row
+   keeps its own width maths; only the chip chrome changes. */
+html[data-dsui] [data-slot="conversation.composer.bar"] [data-composer-card] select {
+  box-sizing: border-box;
+  height: 34px;
+  padding-left: 12px;
+  padding-right: 28px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 17px;
+  background-color: transparent;
+  color: var(--dsw-alias-label-primary);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+html[data-dsui] [data-slot="conversation.composer.bar"] [data-composer-card] select:hover:not(:disabled) {
+  background-color: var(--dsw-alias-interactive-bg-hover);
+}
+
+/* No workspace selection: the blank-session hero's workspace chip is hidden.
+   The tag is placed by the runtime (duiTagWorkspaceChip) on the hero row's first
+   button, because the shipped chip's markup differs from the source packages and
+   carries no stable attribute of its own. */
+html[data-dsui] [data-dsui-workspace-chip] {
+  display: none !important;
+}
+
+/* Permission and plan controls: the app's 34px outlined toggle pills, the same
+   silhouette as its 深度思考 / 智能搜索 switches. */
+html[data-dsui] [data-composer-card] [data-slot="conversation.input.permission"] button,
+html[data-dsui] [data-composer-card] [data-slot="conversation.input.plan"] button {
+  box-sizing: border-box;
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 17px;
+  background-color: transparent;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+html[data-dsui] [data-composer-card] [data-slot="conversation.input.permission"] button:hover,
+html[data-dsui] [data-composer-card] [data-slot="conversation.input.plan"] button:hover {
+  background-color: var(--dsw-alias-interactive-bg-hover);
+  color: var(--dsw-alias-label-primary);
+}
+
+/* Add control: the demo's circular attach button, transparent until hover. */
+html[data-dsui] [data-slot="conversation.composer.bar"] [data-composer-card] button[aria-haspopup="listbox"] {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--dsw-alias-label-primary);
+}
+
+html[data-dsui] [data-slot="conversation.composer.bar"] [data-composer-card] button[aria-haspopup="listbox"]:hover:not(:disabled) {
+  background-color: var(--dsw-alias-interactive-bg-hover);
+}
+
+/* Send / stop: the demo's 34px brand circle with on-colour ink. */
+html[data-dsui] [data-dsui-send] {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--dsw-alias-button-primary-fill);
+  color: var(--dsw-static-neutral-bluish-00);
+}
+
+html[data-dsui] [data-dsui-send]:hover:not(:disabled) {
+  background: var(--dsw-alias-button-primary-hover);
+}
+
+html[data-dsui] [data-dsui-send]:disabled {
+  opacity: 0.4;
+}
+
+/* Model chip: the demo's pill silhouette. */
+html[data-dsui] [data-dsui-model] {
+  box-sizing: border-box;
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 17px;
+  background-color: transparent;
+  color: var(--dsw-alias-label-primary);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+html[data-dsui] [data-dsui-model]:hover:not(:disabled) {
+  background-color: var(--dsw-alias-interactive-bg-hover);
+}
+
+/* ---------- attachment chips ---------- */
+
+html[data-dsui] [data-slot="conversation.input.attachments"] :has(> img) {
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 16px;
+  background-color: var(--dsw-alias-bg-skeleton);
+}
+
+html[data-dsui] [data-slot="conversation.input.attachments"] div[title] {
+  border-color: var(--dsw-alias-border-l2);
+  border-radius: 12px;
+  background-color: var(--dsw-alias-bg-layer-2);
+}
+
+/* The app's generation caveat sits under the composer readings as its own
+   full-width line: the dock wraps so the readings keep their row and the caveat
+   never squeezes between them. */
+html[data-dsui] [data-composer-dock] {
+  flex-wrap: wrap;
+  row-gap: 2px;
+}
+
+html[data-dsui] .dsui-caveat {
+  order: 99;
+  flex: 0 0 100%;
+  margin: 2px 0 0;
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 11px;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+  text-align: center;
+  user-select: none;
+}

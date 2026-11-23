@@ -1,0 +1,18 @@
+/*
+ * New-session hero: the demo whale mark before the blank-session headline.
+ *
+ * Only the mark seat is taken; the headline copy belongs to the conversation
+ * locale dictionary, and the shipped pixel-whale artwork keeps its own hoc seat.
+ */
+
+html[data-dsui] .dsui-hero-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dsw-alias-brand-primary);
+}
+
+html[data-dsui] .dsui-hero-mark svg {
+  width: 48px;
+  height: 48px;
+}
